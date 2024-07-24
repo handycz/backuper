@@ -1,0 +1,20 @@
+[Unit]
+Description=Run backup to %i
+After=network.target
+Wants=backup@%i.timer
+
+[Service]
+Type=oneshot
+ExecStart=/opt/root/restic/backups.py \
+	backup \
+	/opt/root/restic/config-%i-repo.json \
+	/opt/root/restic/config-%i-passwd \
+	/opt/root/restic/config-source.json
+
+ExecStopPost=matrix-commander \
+	--store /opt/root/matrix/store \
+	--credentials /opt/root/matrix/credentials.json \
+	--message "Backup beerpowered -> %i: ${SERVICE_RESULT} (${EXIT_STATUS})"
+
+[Install]
+WantedBy=multi-user.target

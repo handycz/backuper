@@ -11,10 +11,5 @@ ExecStart=/opt/root/restic/backups.py \
 	/opt/root/restic/config-%i-passwd \
 	/opt/root/restic/config-source.json
 
-ExecStopPost=matrix-commander \
-	--store /opt/root/matrix/store \
-	--credentials /opt/root/matrix/credentials.json \
-	--message "Backup beerpowered -> %i: ${SERVICE_RESULT} (${EXIT_STATUS})"
-
 [Install]
 WantedBy=multi-user.target

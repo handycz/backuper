@@ -1,0 +1,18 @@
+[Unit]
+Description=Check backup at %i
+After=network.target
+Wants=check-backup@%i.timer
+
+[Service]
+Type=oneshot
+ExecStart=/opt/root/restic/backups.py \
+	verify \
+	/opt/root/restic/config-%i-repo.json \
+	/opt/root/restic/config-%i-passwd 
+ExecStopPost=bash -c 'test "${SERVICE_RESULT}" == "success" || matrix-commander \
+	--store /opt/root/matrix/store \
+	--credentials /opt/root/matrix/credentials.json \
+    --message "%H backup to %i: backup verification **failed** (${SERVICE_RESULT})"'
+
+[Install]
+WantedBy=multi-user.target

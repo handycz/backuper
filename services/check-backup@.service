@@ -5,6 +5,7 @@ Wants=check-backup@%i.timer
 
 [Service]
 Type=oneshot
+Environment="HOME=%h"
 ExecStart=/opt/root/restic/backups.py \
 	verify \
 	/opt/root/restic/config-%i-repo.json \

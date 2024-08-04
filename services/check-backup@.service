@@ -2,6 +2,7 @@
 Description=Check backup at %i
 After=network.target
 Wants=check-backup@%i.timer
+Requires=network-online.target
 
 [Service]
 Type=oneshot

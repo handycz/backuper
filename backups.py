@@ -118,7 +118,7 @@ def verify(repo: Path, pwfile: Path):
         return
     
 
-    cmd = f'restic -r {repo_config['url']} snapshots --group-by path --password-file {pwfile} --tag autobackup --json'
+    cmd = f"restic -r {repo_config['url']} snapshots --group-by path --password-file {pwfile} --tag autobackup --json"
     output = _execute(cmd, repo_config, capture_output=True)
     groups = json.loads(output)
 

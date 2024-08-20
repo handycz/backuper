@@ -85,14 +85,14 @@ def backup(repo: Path, pwfile: Path, src: Path):
     logger.info(f"Reading config: {repo}")
     repo_config = json.loads(repo.read_text())
 
-    logger.info(f"Backing up files to {repo_config["url"]}")
+    logger.info(f"Backing up files to {repo_config['url']}")
     for dir in src_config["dirs"]:
         logger.info(f"- {dir}")
     
     dirs = " ".join(src_config["dirs"])
     excludes = " ".join([f"--exclude {ex}" for ex in src_config.get("exclude", [])])
 
-    cmd = f"restic -r {repo_config["url"]} backup {dirs} {excludes} --password-file {pwfile} --tag autobackup"
+    cmd = f"restic -r {repo_config['url']} backup {dirs} {excludes} --password-file {pwfile} --tag autobackup"
     _execute(cmd, repo_config)
 
 
@@ -100,7 +100,7 @@ def init(repo: Path, pwfile: Path):
     logger.info(f"Reading config: {repo}")
     repo_config = json.loads(repo.read_text())
 
-    cmd = f"restic -r {repo_config["url"]} init --password-file {pwfile}"
+    cmd = f"restic -r {repo_config['url']} init --password-file {pwfile}"
     _execute(cmd, repo_config)
 
 
@@ -108,7 +108,7 @@ def verify(repo: Path, pwfile: Path):
     logger.info(f"Reading config: {repo}")
     repo_config = json.loads(repo.read_text())
 
-    cmd = f"restic -r {repo_config["url"]} check --read-data-subset=5% --password-file {pwfile}"
+    cmd = f"restic -r {repo_config['url']} check --read-data-subset=5% --password-file {pwfile}"
     
     try:
         _execute(cmd, repo_config)
@@ -118,7 +118,7 @@ def verify(repo: Path, pwfile: Path):
         return
     
 
-    cmd = f'restic -r {repo_config["url"]} snapshots --group-by path --password-file {pwfile} --tag autobackup --json'
+    cmd = f'restic -r {repo_config['url']} snapshots --group-by path --password-file {pwfile} --tag autobackup --json'
     output = _execute(cmd, repo_config, capture_output=True)
     groups = json.loads(output)
 

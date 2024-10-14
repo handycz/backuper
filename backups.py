@@ -146,7 +146,8 @@ def compile_dotenv(repo: Path, pwfile: Path):
     logger.info(f"In bash, you can source by running: source <(./backups.py compile-dotenv {str(repo)})")
     for name, value in repo_config.get("env", {}).items():
         print(f"export {name}={value}")
-
+    
+    print(f"export RESTIC_REPOSITORY={str(repo_config.get('url', ''))}")
     print(f"export RESTIC_PASSWORD_FILE={str(pwfile.absolute())}")
 
 

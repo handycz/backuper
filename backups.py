@@ -23,7 +23,7 @@ Operations:
     backup              Creates a snapshot. Requires 3 more arguments: repo config, password file, source config.
     init                Initializes the repository. Requires 2 more arguments: repo config, password file.
     verify              Verifies the repo consistency and checks if there is at least 5 snapshots taken last week. Requires 2 arguments: repo config, password file.
-    compile-dotenv      Prints the ENV variables from the repo config file in format that can be `source`d. Requires 1 argument: repo config.
+    compile-dotenv      Prints the ENV variables from the repo config file in format that can be `source`d. Requires 2 arguments: repo config, password file.
 
 Example:
     {file} /path/to/source/config.json /path/to/repo/config.json /path/to/password/file
@@ -139,13 +139,15 @@ def verify(repo: Path, pwfile: Path):
         sys.exit(1)
 
 
-def compile_dotenv(repo: Path):
+def compile_dotenv(repo: Path, pwfile: Path):
     logger.info(f"Reading config: {repo}")
     repo_config = json.loads(repo.read_text())
 
     logger.info(f"In bash, you can source by running: source <(./backups.py compile-dotenv {str(repo)})")
     for name, value in repo_config.get("env", {}).items():
         print(f"export {name}={value}")
+
+    print(f"export RESTIC_PASSWORD_FILE={str(pwfile.absolute())}")
 
 
 if __name__ == "__main__":
@@ -162,8 +164,8 @@ if __name__ == "__main__":
         assert len(sys.argv) == 4, "`verify` needs 2 arguments"
         verify(Path(sys.argv[2]), Path(sys.argv[3]))
     elif sys.argv[1] == "compile-dotenv": # For debugging
-        assert len(sys.argv) == 3, "`compile-dotenv` needs 1 argument"
-        compile_dotenv(Path(sys.argv[2]))
+        assert len(sys.argv) == 4, "`compile-dotenv` needs 2 arguments"
+        compile_dotenv(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
         print(f"Unknown argument: {sys.argv[1]}")
         sys.exit(1)

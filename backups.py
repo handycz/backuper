@@ -126,8 +126,8 @@ def verify(repo: Path, pwfile: Path):
 
     for group in groups:
         logger.info(f"Group: {' '.join(group['group_key']['paths'])}")
-
-        timestamps = [datetime.fromisoformat(snapshot["time"][:19]) for snapshot in group["snapshots"]]
+        local_tz = datetime.now().astimezone().tzinfo
+        timestamps = [datetime.fromisoformat(snapshot["time"][:19]).replace(tzinfo=local_tz) for snapshot in group["snapshots"]]
         last_week_snapshots = [timestamp for timestamp in timestamps if datetime.now(timezone.utc) - timestamp < timedelta(days=7)]
         logger.info(f"Last week snapshot count: {len(last_week_snapshots)}")
         if len(last_week_snapshots) < MIN_SNAPSHOTS_PER_WEEK:
